@@ -1,0 +1,38 @@
+﻿@model IEnumerable<CurrencyViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h3>Currency </h3>
+<table class="table">
+    <tr class="table">
+        <th>Валютные пары</th>
+        <th>Период агрегации</th>
+        <th>Макс значение</th>
+        <th>Мин значение</th>
+        <th>Первое значение</th>
+        <th>Последнее значение</th>
+    </tr>
+    <tbody>
+        @foreach (var cur in Model.GroupBy(x =>  x.CurrencyPair , (key, items) => new
+        {
+            Name = key,
+            Period = (items.Min(y => y.BookDate).ToString() + " - " + items.Min(y => y.BookDate).ToString()),
+            MaxValue = items.Max(y => y.Value),
+            MinValue = items.Min(y => y.Value),
+            FirstValue = items.OrderBy(y => y.BookDate).Select(y => y.Value).First(),
+            LastValue = items.OrderByDescending(y => y.BookDate).Select(y => y.Value).First()
+        }))
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => cur.Name)</td>
+                <td>@Html.DisplayFor(modelItem => cur.Period)</td>
+                <td>@Html.DisplayFor(modelItem => cur.MaxValue)</td>
+                <td>@Html.DisplayFor(modelItem => cur.MinValue)</td>
+                <td>@Html.DisplayFor(modelItem => cur.FirstValue)</td>
+                <td>@Html.DisplayFor(modelItem => cur.LastValue)</td>
+            </tr>
+        }
+
+    </tbody>
+</table>  
