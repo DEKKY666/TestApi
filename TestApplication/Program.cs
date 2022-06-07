@@ -13,7 +13,7 @@ builder.Services.AddTransient<IRepository>(r =>
                 ?? throw new ArgumentException("Connection string is not defined in appsettings")));
 builder.Services.AddTransient<IPersonDal, PersonDal>();
 builder.Services.AddTransient<ICityDal, CityDal>();
-builder.Services.AddMvc()
+builder.Services.AddMvc().AddControllersAsServices()
      .AddJsonOptions(options =>
      {
          options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

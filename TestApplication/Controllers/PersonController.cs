@@ -10,29 +10,13 @@ namespace TestApplication.Controllers
     {    
         private readonly ILogger<PersonController> _logger;
         private readonly IPersonDal _personDal;
-        private readonly ICityDal _cityDal;
+        private readonly CityController _cityController;
 
-        public PersonController(IPersonDal personDal, ICityDal cityDal, ILogger<PersonController> logger)
+        public PersonController(IPersonDal personDal, CityController cityController, ILogger<PersonController> logger)
         {
             _logger = logger;
-            _cityDal = cityDal;
             _personDal = personDal;
-        }
-
-        [HttpGet("GetAvialableCities")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCitiesAsync()
-        {
-            try
-            {           
-                return Ok(await _cityDal.GetCitiesAsync());
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest();
-            }
+            _cityController = cityController;
         }
 
         [HttpPost("CreateNewPerson")]
@@ -42,7 +26,7 @@ namespace TestApplication.Controllers
         {
             try
             {
-                var cities = await _cityDal.GetCitiesAsync();
+                var cities = await _cityController.GetCitiesAsync();
 
                 if (!cities.Any(c => c.Name == personModel.City)) throw new Exception("city is not found in database");
                 await _personDal.CreateNewPersonAsync(personModel);
